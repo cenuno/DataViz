@@ -1,7 +1,7 @@
 Data Visualizations
 ================
 Cristian E. Nuno
-April 08, 2018
+April 09, 2018
 
 -   [Reshaping `iris` into Tidy Format](#reshaping-iris-into-tidy-format)
 
@@ -17,14 +17,14 @@ Using the concepts laid out in [Tidy Data](http://vita.had.co.nz/papers/tidy-dat
 library( tidyverse )
 ```
 
-    ## ── Attaching packages ─────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ───────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
     ## ✔ tibble  1.4.2     ✔ dplyr   0.7.4
     ## ✔ tidyr   0.8.0     ✔ stringr 1.3.0
     ## ✔ readr   1.1.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ──────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -53,17 +53,12 @@ Below demonstrates how to transfrom `iris` so that each row contains **one** mea
 # for each Species (setosa, virginica, versicolor)
 iris.tidy <-
   iris %>%
-  gather( key = "Measure", value = "Value"
-          , Sepal.Length, Sepal.Width
-          , Petal.Length, Petal.Width ) %>%
-  mutate( Part = map_chr( .x = strsplit( x = Measure
-                                         , split = "."
-                                         , fixed = TRUE )
-                           , .f = function( i ) i[[1]] )
-          , Measure = map_chr( .x = strsplit( x = Measure
-                                                  , split = "."
-                                                  , fixed = TRUE )
-                                   , .f = function( i ) i[[2]] ) )
+  gather( key = "Measure"
+          , value = "Value"
+          , -Species ) %>% 
+  separate( col = Measure
+            , into = c("Part", "Measure")
+            , sep = "\\." )
 
 # view results
 str( iris.tidy )
@@ -71,9 +66,9 @@ str( iris.tidy )
 
     ## 'data.frame':    600 obs. of  4 variables:
     ##  $ Species: Factor w/ 3 levels "setosa","versicolor",..: 1 1 1 1 1 1 1 1 1 1 ...
+    ##  $ Part   : chr  "Sepal" "Sepal" "Sepal" "Sepal" ...
     ##  $ Measure: chr  "Length" "Length" "Length" "Length" ...
     ##  $ Value  : num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
-    ##  $ Part   : chr  "Sepal" "Sepal" "Sepal" "Sepal" ...
 
 `iris.tidy` contains 600 rows by 4 columns.
 
