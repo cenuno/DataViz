@@ -79,7 +79,11 @@ str( iris.tidy )
 
 The number of rows in `iris.tidy` grew by 4 because the use of [`gather()`](https://www.rdocumentation.org/packages/tidyr/versions/0.8.0/topics/gather) combined the Sepal.Length, Sepal.Width, Petal.Length, Petal.Width values into the newly created `Value` column.
 
-At the same time, `iris.tidy` retains two important distinctions: the measurement type - length or width - in the newly created `Measure` column and flower part - sepal or petal - in the newly created `Part` column.
+At the same time, `iris.tidy` retains two important distinctions:
+
+1.  Measurement type - length or width - in the newly created `Measure` column; and
+
+2.  Flower part - sepal or petal - in the newly created `Part` column.
 
 Each row in `iris.tidy` now follows the tenants of being tidy since each row contains **one** measurement value by each observation.
 
