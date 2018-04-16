@@ -1,9 +1,74 @@
 Data Visualizations
 ================
 Cristian E. Nuno
-April 09, 2018
+April 15, 2018
 
+-   [Visualizing Categorical Counts](#visualizing-categorical-counts)
 -   [Reshaping `iris` into Tidy Format](#reshaping-iris-into-tidy-format)
+
+Visualizing Categorical Counts
+==============================
+
+This week, I spent some time learning about the [`data.table`](https://github.com/Rdatatable/data.table/wiki) package. A lot of folks on Stack Overflow recommended I look into it to speed up my processing time.
+
+At first, I didn't know if the package was being hyped up. But after experimenting, the hype is real: `data.table` performs operations extremely quickly.
+
+At first, the trade-off for this speed is readability. But the folks at `data.table` provide great documentation to help newbies like myself become more familiar with their syntax.
+
+``` r
+# load necessary packages
+library( data.table )
+library( ggplot2 )
+
+# load necessary data
+df <- as.data.table( mtcars )
+
+# print object size 
+object.size( df )
+```
+
+    ## 5608 bytes
+
+``` r
+# expand the rows in df
+# from 32 to 16 billion
+df <- df[ rep( x = 1:nrow( df ), times = 500000), ]
+
+# check dim
+dim( df )
+```
+
+    ## [1] 16000000       11
+
+``` r
+# now size of df is nearly 1.5 GB
+object.size( df )
+```
+
+    ## 1408002792 bytes
+
+``` r
+# count the number of unique values 
+# that appear in the `cyl` column
+cyl.counts <-
+  df[, j = .( Count = .N)
+     , by = .(Cylinders = cyl ) ][ order( Cylinders ) ]
+
+
+# visualize results
+ggplot( cyl.counts, aes( x = factor( Cylinders )
+                         , y = Count ) ) +
+  geom_bar( stat = "identity"
+            , aes( fill = factor( Cylinders ) )
+            , position = "dodge" ) + 
+  labs( title = "Counting Cylinders"
+        , subtitle = "There were fewer cars with 6 cylinders than those with 4 or 8 cylinders."
+        , caption = "Source: 1974 Motor Trend Car Road Tests"
+        , fill = "Cylinder"
+        , x = "Cylinder" )
+```
+
+![](README_files/figure-markdown_github/DT%20Viz-1.png)
 
 Reshaping `iris` into Tidy Format
 =================================
@@ -19,14 +84,18 @@ library( tidyverse )
 
     ## ── Attaching packages ───────────────────── tidyverse 1.2.1 ──
 
-    ## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
-    ## ✔ tibble  1.4.2     ✔ dplyr   0.7.4
-    ## ✔ tidyr   0.8.0     ✔ stringr 1.3.0
-    ## ✔ readr   1.1.1     ✔ forcats 0.3.0
+    ## ✔ tibble  1.4.2     ✔ purrr   0.2.4
+    ## ✔ tidyr   0.8.0     ✔ dplyr   0.7.4
+    ## ✔ readr   1.1.1     ✔ stringr 1.3.0
+    ## ✔ tibble  1.4.2     ✔ forcats 0.3.0
 
     ## ── Conflicts ──────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
+    ## ✖ dplyr::between()   masks data.table::between()
+    ## ✖ dplyr::filter()    masks stats::filter()
+    ## ✖ dplyr::first()     masks data.table::first()
+    ## ✖ dplyr::lag()       masks stats::lag()
+    ## ✖ dplyr::last()      masks data.table::last()
+    ## ✖ purrr::transpose() masks data.table::transpose()
 
 ``` r
 # view structure of iris
@@ -87,7 +156,10 @@ Each row in `iris.tidy` now follows the tenants of being tidy since each row con
 ggplot( data = iris.tidy
         , aes( x = Measure, y = Value, col = Species ) ) +
   geom_jitter() +
-  facet_grid( facets = . ~ Species )
+  facet_grid( facets = . ~ Species ) +
+  labs( title = "Length and Width Values by Flower Species and Measurement Type"
+       , subtitle = "Setosa's sepals tend to be larger than their petals."
+       , caption = "Source: Edgar Anderson's Iris Data" )
 ```
 
 ![](README_files/figure-markdown_github/Visualize%20Tidy%20Iris-1.png)
