@@ -1,9 +1,10 @@
 Data Visualizations
 ================
 Cristian E. Nuno
-April 15, 2018
+April 16, 2018
 
 -   [Visualizing Categorical Counts](#visualizing-categorical-counts)
+    -   [Multiple Elements](#multiple-elements)
 -   [Reshaping `iris` into Tidy Format](#reshaping-iris-into-tidy-format)
 
 Visualizing Categorical Counts
@@ -69,6 +70,34 @@ ggplot( cyl.counts, aes( x = factor( Cylinders )
 ```
 
 ![](README_files/figure-markdown_github/DT%20Viz-1.png)
+
+Multiple Elements
+-----------------
+
+This is a great example of not knowing what story to tell with my data.
+
+``` r
+# load necessary data
+df <- 
+  data.frame( Grade = factor( x = rep( x = c( "PK", "K", 1:12 )
+                                       , times = 30 )
+                              , levels = c( "PK", "K", 1:12) )
+              , Count = sample( x = 1000:30000, size = 420, replace = FALSE)
+              , School_Year = do.call( what = "c"
+                                       , args = lapply( X = 2009:2018, FUN = rep, times = 42 ) )
+              , File_Type = factor( x = rep( x = c( rep( x = "20th Day", times = 14), rep( x = "Mid Year", times = 14), rep( x = "End of Year", times = 14 ) ), times = 10 )
+                                     , levels = c("20th Day", "Mid Year", "End of Year" ) )
+              , stringsAsFactors = TRUE )
+
+ggplot( data = df
+        , aes( x = School_Year, y = mean( Count ) ) ) +
+  geom_bar( aes( fill = Grade )
+            , position = "dodge"
+            , stat = "identity" ) + 
+  facet_grid( facets = Grade ~ File_Type )
+```
+
+![](README_files/figure-markdown_github/School%20Viz-1.png)
 
 Reshaping `iris` into Tidy Format
 =================================
