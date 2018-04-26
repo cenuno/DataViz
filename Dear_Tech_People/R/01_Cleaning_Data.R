@@ -30,21 +30,16 @@ df$company_name <-
 
 # make both sector and customer base columns 
 # Title Case spelling and factor variables
-df$sector_1 <-
-  str_to_title( string = df$sector_1 ) %>%
-  as.factor()
+factor.columns <-
+  colnames( df )[ 
+    grepl( pattern = "sector|customer_base", colnames( df ) )
+    ]
 
-df$sector_2 <-
-  str_to_title( string = df$sector_2 ) %>%
-  as.factor()
-
-df$customer_base_1 <-
-  str_to_title( string = df$customer_base_1 ) %>%
-  as.factor()
-
-df$customer_base_2 <-
-  str_to_title( string = df$customer_base_2 ) %>%
-  as.factor()
+df[, factor.columns ] <-
+  map( .x = df[, factor.columns ]
+       , .f = function( i )
+         str_to_title( string = i ) %>%
+         as.factor() )
 
 # identify which numeric columns
 # contain a comma "," value
