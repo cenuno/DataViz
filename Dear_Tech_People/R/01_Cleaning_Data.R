@@ -28,21 +28,21 @@ df$company_name <-
         , replacement = ""
         , x = df$company_name )
 
-# make both sector and customer base columns 
-# Title Case spelling and factor variables
+# identify the sector_X and customer_base_X columns
 factor.columns <-
   colnames( df )[ 
     grepl( pattern = "sector|customer_base", colnames( df ) )
     ]
 
+# make both sector and customer base columns 
+# Title Case spelling and factor variables
 df[, factor.columns ] <-
   map( .x = df[, factor.columns ]
        , .f = function( i )
          str_to_title( string = i ) %>%
          as.factor() )
 
-# identify which numeric columns
-# contain a comma "," value
+# identify the numeric columns
 numeric.columns <-
   colnames( df )[
     which( !colnames( df ) %in% c("date_pulled"
@@ -55,7 +55,12 @@ numeric.columns <-
                                   , "sf_based" ) )
   ]
 
-# create T/F indicating which columns contain a comma
+# examine each numeric column
+# if any value contains a comma
+# replace those comma values with an empty space ""
+# and convert to an integer;
+# else, convert the numeric value to an integer.
+# repeat logic for all numeric.columns within df
 df[, numeric.columns ] <-
   map( .x = df[, numeric.columns ]
                   , .f = function( i )
