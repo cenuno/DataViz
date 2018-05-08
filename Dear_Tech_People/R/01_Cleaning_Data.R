@@ -42,6 +42,10 @@ df[, factor.columns ] <-
          str_to_title( string = i ) %>%
          as.factor() )
 
+# fix the spelling of two sectors
+levels( df$sector_2 )[ which( levels( df$sector_2 ) == "Aerospace?" ) ] <- "Aerospace"
+levels( df$sector_2 )[ which( levels( df$sector_2 ) == "Ai" ) ] <- "AI"
+
 # identify the numeric columns
 numeric.columns <-
   colnames( df )[
